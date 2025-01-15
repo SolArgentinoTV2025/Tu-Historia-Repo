@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historia Interactiva</title>
+  <link rel="stylesheet" href="https://fuentes.solargentinotv.com.ar/netflixsans.css">
+  <style>
+    :root {
+      --primary-color: #0078d4;
+      --background-color: #f4f4f9;
+      --text-color: #333;
+      --border-radius: 0.5em;
+      --box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      font-family: 'Netflix Sans', sans-serif;
+      margin: 2em;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 2em;
+      font-size: 2rem;
+    }
+
+    .story {
+      margin-top: 2em;
+      padding: 1.5em;
+      border: 0.1em solid #ccc;
+      border-radius: var(--border-radius);
+      background: #fff;
+      max-width: 40rem;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: justify;
+      box-shadow: var(--box-shadow);
+      font-size: 1rem;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      max-width: 30rem;
+      margin: 0 auto;
+    }
+
+    .dropbtn {
+      background-color: #fff;
+      color: var(--primary-color);
+      padding: 1em;
+      border: 0.1em solid var(--primary-color);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      display: inline-block;
+      font-family: 'Netflix Sans', sans-serif;
+    }
+
+    .dropbtn::after {
+      content: "▼";
+      font-size: 0.75em;
+      color: var(--primary-color);
+      margin-left: 0.5em;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #ffffff;
+      border: 0.1em solid var(--primary-color);
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: var(--box-shadow);
+      z-index: 1;
+      margin-top: 0.2em;
+      text-align: center;
+    }
+
+    .dropdown.open .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-item {
+      color: var(--primary-color);
+      padding: 1em;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    @media screen and (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .story {
+        font-size: 0.875rem;
+        padding: 1em;
+      }
+
+      .dropbtn {
+        padding: 0.75em;
+        font-size: 0.875rem;
+      }
+
+      .dropdown-item {
+        font-size: 0.875rem;
+        padding: 0.75em;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .story {
+        padding: 0.75em;
+        font-size: 0.75rem;
+      }
+
+      .dropbtn {
+        font-size: 0.75rem;
+        padding: 0.625em;
+      }
+
+      .dropdown-item {
+        font-size: 0.75rem;
+        padding: 0.625em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Historia Interactiva</h1>
+
+  <div class="dropdown">
+    <button class="dropbtn" id="dropdown-btn">Seleccionar Parte</button>
+    <div class="dropdown-content" id="dropdown-menu">
+      <div class="dropdown-item" data-part="parte1">Parte 1</div>
+      <div class="dropdown-item" data-part="parte2">Parte 2</div>
+      <div class="dropdown-item" data-part="parte3">Parte 3</div>
+      <div class="dropdown-item" data-part="parte4">Parte 4</div>
+      <div class="dropdown-item" data-part="parte5">Parte 5</div>
+    </div>
+  </div>
+
+  <div id="story-container" class="story">
+    <p>Selecciona una parte para ver la historia.</p>
+  </div>
+
+  <script>
+    // Fetch historias desde el archivo JSON
+    fetch('historias.json')
+      .then(response => response.json())
+      .then(data => {
+        const historias = data.partes;
+        const dropdown = document.querySelector('.dropdown');
+        const dropdownBtn = document.getElementById('dropdown-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const storyContainer = document.getElementById('story-container');
+
+        dropdownMenu.addEventListener('click', (event) => {
+          const part = event.target.getAttribute('data-part');
+          if (part && historias[part]) {
+            storyContainer.innerHTML = `<p>${historias[part]}</p>`;
+            dropdownBtn.textContent = event.target.textContent;
+            dropdown.classList.remove('open');
+          }
+        });
+
+        dropdownBtn.addEventListener('click', () => {
+          dropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', (event) => {
+          if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('open');
+          }
+        });
+      })
+      .catch(error => console.error('Error cargando el JSON:', error));
+  </script>
+
+</body>
+</html>
